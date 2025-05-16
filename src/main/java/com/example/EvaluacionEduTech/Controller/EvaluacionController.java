@@ -26,13 +26,13 @@ public class EvaluacionController {
     private EvaluacionService service;
 
     //Obtener Evaluaciones
-    @GetMapping("/")
+    @GetMapping()
     public List<Evaluacion> listarEvaluaciones(){
         return service.listarEvaluaciones();
     }
 
     //Agregar Evaluaciones
-    @PostMapping("/")
+    @PostMapping()
     public Evaluacion guardarEvaluacion(@RequestBody Evaluacion evaluacion){
         return service.guardarEvaluacion(evaluacion);
     }
