@@ -13,13 +13,28 @@ public class EvaluacionService {
     @Autowired
     private EvaluacionRepository repository;
 
-    //listar todo
+    //Service para obtener todo
     public List<Evaluacion> listarEvaluaciones(){
         return repository.findAll();
     }
 
-    //guardar
+    //Service para guardar
     public Evaluacion guardarEvaluacion(Evaluacion evaluacion){
         return repository.save(evaluacion);
+    }
+
+    //Service para obtener por id
+    public Evaluacion getEvaluacionId(Long evaluacionID){
+        return repository.findById(evaluacionID).get();
+    }
+
+    //Service para actualizar
+    public Evaluacion saveEvaluacion(Evaluacion evaluacion){
+        return repository.save(evaluacion);
+    }
+
+    //Service para eliminar
+    public void deleteEvaluacion(Long evaluacionId){
+        repository.deleteById(evaluacionId);
     }
 }
