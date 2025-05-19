@@ -46,7 +46,7 @@ public class EvaluacionController {
     //Actualizar Evaluacion
     @PutMapping("/{evaluacionId}")
     public Evaluacion ActualizaEvaluacion(@RequestBody Evaluacion evaluacion,@PathVariable Long evaluacionId) {        
-        return service.saveEvaluacion(evaluacion);
+        return service.actualizarEvaluacion(evaluacion);
     }
     
     //Eliminar Evaluacion

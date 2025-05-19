@@ -6,5 +6,8 @@ import com.example.EvaluacionEduTech.Model.Evaluacion;
 
 @Repository
 public interface EvaluacionRepository extends JpaRepository<Evaluacion, Long>{
+
+    Evaluacion findByTitulo(String titulo);
+    boolean existsByTitulo(String titulo);
     
 }

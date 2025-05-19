@@ -24,20 +24,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "evaluacion")
 public class Evaluacion {
 
-    
-
-    public Evaluacion(Long evaluacionId, String titulo, String descripcion, int cursoId, LocalDate fechaCreacion,
-            TipoEvaluacion tipoEvaluacion, int puntajeMaximo, int duracionMinutos) {
-        this.evaluacionId = evaluacionId;
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.cursoId = cursoId;
-        this.fechaCreacion = fechaCreacion;
-        this.tipoEvaluacion = tipoEvaluacion;
-        this.puntajeMaximo = puntajeMaximo;
-        this.duracionMinutos = duracionMinutos;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "evaluacion_id")

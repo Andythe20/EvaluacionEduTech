@@ -1,6 +1,7 @@
 package com.example.EvaluacionEduTech.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,28 +14,42 @@ public class EvaluacionService {
     @Autowired
     private EvaluacionRepository repository;
 
-    //Service para obtener todo
+    //Obtener todo
     public List<Evaluacion> listarEvaluaciones(){
         return repository.findAll();
     }
 
-    //Service para guardar
-    public Evaluacion guardarEvaluacion(Evaluacion evaluacion){
-        return repository.save(evaluacion);
-    }
-
-    //Service para obtener por id
+    //Obtener por id
     public Evaluacion getEvaluacionId(Long evaluacionID){
         return repository.findById(evaluacionID).get();
     }
 
-    //Service para actualizar
-    public Evaluacion saveEvaluacion(Evaluacion evaluacion){
-        return repository.save(evaluacion);
+    //Guardar
+    public Evaluacion guardarEvaluacion(Evaluacion evaluacion){
+
+        if (repository.existsByTitulo(evaluacion.getTitulo())) {
+            return null;
+        }
+
+        repository.save(evaluacion);
+        return evaluacion;
     }
 
-    //Service para eliminar
+    //Actualizar
+    public Evaluacion actualizarEvaluacion(Evaluacion evaluacion){
+        if (!repository.existsById(evaluacion.getEvaluacionId())) {
+            return null;
+        }
+        repository.save(evaluacion);
+        return evaluacion;
+    }
+
+    //Eliminar
     public void deleteEvaluacion(Long evaluacionId){
+        if (!repository.existsById(evaluacionId)) {
+            throw new NoSuchElementException("No existe una evaluacion con id: " + evaluacionId);
+        }
         repository.deleteById(evaluacionId);
     }
+
 }
