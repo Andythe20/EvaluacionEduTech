@@ -49,11 +49,9 @@ public class PreguntaController {
     
     @PutMapping("/{idPregunta}")
     public Pregunta actualizarPregunta(@PathVariable Long idPregunta, @RequestBody Pregunta pregunta){
-        try {
+
             return preguntaService.actualizarPregunta(pregunta);
-        } catch (Exception e) {
-            return null;
-        }
+
     }
 
 

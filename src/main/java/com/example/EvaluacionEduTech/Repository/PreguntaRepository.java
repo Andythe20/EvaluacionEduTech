@@ -5,8 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import com.example.EvaluacionEduTech.Model.Pregunta;
 
+
 @Repository
 public interface PreguntaRepository extends JpaRepository<Pregunta, Long>{
 
-
+    Pregunta findByTextoPregunta(String textoPregunta);
+    boolean existsByTextoPregunta(String textoPregunta);
 }
