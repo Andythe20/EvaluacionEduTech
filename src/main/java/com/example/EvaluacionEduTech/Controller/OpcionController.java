@@ -27,13 +27,15 @@ public class OpcionController {
     private OpcionService opcionService;
 
     @GetMapping("/")
-    public List<Opcion> listarOpciones(){
-        return opcionService.listarOpciones();
-    }
+    public ResponseEntity<List<Opcion>> listarOpciones(){
 
-    @PostMapping()
-    public Opcion guardarOpcion(@RequestBody Opcion opcion){
-        return opcionService.guardarOpcion(opcion);
+        List<Opcion> opciones = opcionService.listarOpciones();
+
+        if (opciones.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(opciones);
     }
 
     @GetMapping("/{idOpcion}")
@@ -45,7 +47,17 @@ public class OpcionController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    
+
+    @PostMapping("/")
+    public ResponseEntity<Opcion> guardarOpcion(@RequestBody Opcion opcion){
+
+        if (opcion == null){
+            return ResponseEntity.badRequest().build();
+        }
+
+        opcionService.guardarOpcion(opcion);
+        return ResponseEntity.ok(opcionService.obtenerOpcionId(opcion.getOpcionId()));
+    }    
 
     @PutMapping()
     public Opcion actualizarOpcion(@RequestBody Opcion nuevaOpcion){

@@ -20,14 +20,22 @@ public class OpcionService {
         return opcionRepository.findAll();
     }
 
-    //guardar opcion
-    public Opcion guardarOpcion(Opcion opcion){
-        try {
-            return opcionRepository.save(opcion);
-        } catch (Exception e) {
-            return null;
+    //validar opcion
+    public boolean validarOpcion(Opcion opcion){
+
+        if (opcion.getOpcion().isEmpty() || opcion.getOpcion() == null
+            || opcion.getPregunta() == null) {
+            return false;
         }
-        
+        return true;
+    }
+
+    public boolean existsByOpcion(String opcion){
+        return opcionRepository.existsByOpcion(opcion);
+    }
+
+    public Opcion findByOpcion(String opcion){
+        return opcionRepository.findByOpcion(opcion);
     }
 
     //Obtener opcion por id
@@ -37,6 +45,21 @@ public class OpcionService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    //guardar opcion
+    public Opcion guardarOpcion(Opcion opcion){
+
+        if (!validarOpcion(opcion)) {
+            return null;
+        }
+
+        if (existsByOpcion(opcion.getOpcion())) {
+            return null;
+        }
+
+        return opcionRepository.save(opcion);
+        
     }
 
     //Actualizar Opcion

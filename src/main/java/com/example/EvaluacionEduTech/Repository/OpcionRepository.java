@@ -6,4 +6,7 @@ import com.example.EvaluacionEduTech.Model.Opcion;
 
 public interface OpcionRepository extends JpaRepository<Opcion, Long>{
 
+    Opcion findByOpcion (String opcion);
+    boolean existsByOpcion(String opcion);
+
 }
