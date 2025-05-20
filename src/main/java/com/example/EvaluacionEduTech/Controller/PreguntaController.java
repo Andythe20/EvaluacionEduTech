@@ -18,7 +18,6 @@ import com.example.EvaluacionEduTech.Service.PreguntaService;
 import org.springframework.web.bind.annotation.PutMapping;
 
 
-
 @RestController
 @RequestMapping("/api/v1/preguntas")
 public class PreguntaController {
@@ -26,16 +25,18 @@ public class PreguntaController {
     @Autowired
     private PreguntaService preguntaService;
 
-    @GetMapping()
-    public List<Pregunta> listarPreguntas(){
-        return preguntaService.listarPreguntas();
-    }
+    @GetMapping("/")
+    public ResponseEntity<List<Pregunta>> listarPreguntas(){
 
-    @PostMapping()
-    public Pregunta guardarPregunta(@RequestBody Pregunta pregunta){
-        return preguntaService.guardarPregunta(pregunta);
-    }
+        //cargamos las preguntas
+        List<Pregunta> preguntas =  preguntaService.listarPreguntas();
 
+        if (preguntas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(preguntas);
+    }
 
     @GetMapping("/{idPregunta}")
     public ResponseEntity<Pregunta> buscarPreguntaId(@PathVariable Long idPregunta){
@@ -46,20 +47,48 @@ public class PreguntaController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    
-    @PutMapping("/{idPregunta}")
-    public Pregunta actualizarPregunta(@PathVariable Long idPregunta, @RequestBody Pregunta pregunta){
 
-            return preguntaService.actualizarPregunta(pregunta);
+    @PostMapping("/")
+    public ResponseEntity<Pregunta> guardarPregunta(@RequestBody Pregunta pregunta){
+
+        if (pregunta == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        preguntaService.guardarPregunta(pregunta);
+        Pregunta preg = preguntaService.buscarPreguntaId(pregunta.getPreguntaId());
+        return ResponseEntity.ok(preg);
+    }
+    
+    @PutMapping("/")
+    public ResponseEntity<Pregunta> actualizarPregunta(@RequestBody Pregunta pregunta){
+
+        //verificar que no venga nulo
+        if (pregunta == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        //verificasr si existe
+        if (!preguntaService.existsById(pregunta.getPreguntaId())) {
+            return ResponseEntity.notFound().build();
+        }
+
+        preguntaService.actualizarPregunta(pregunta);
+        return ResponseEntity.ok(preguntaService.buscarPreguntaId(pregunta.getPreguntaId()));
 
     }
 
 
     @DeleteMapping("/{idPregunta}")
-    public void eliminarPreguntaId(@PathVariable Long idPregunta){
+    public ResponseEntity<Pregunta> eliminarPreguntaId(@PathVariable Long idPregunta){
         try {
+
             preguntaService.eliminarPregunta(idPregunta);
+            return ResponseEntity.ok().build();
+
         } catch (Exception e) {
+
+            return ResponseEntity.notFound().build();
         }
     }
 }
