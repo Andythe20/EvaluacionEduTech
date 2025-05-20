@@ -24,6 +24,10 @@ public class EvaluacionService {
         return repository.findById(evaluacionID).get();
     }
 
+    public boolean existsById(Long evaluacionId){
+        return repository.existsById(evaluacionId);
+    }
+
     //Guardar
     public Evaluacion guardarEvaluacion(Evaluacion evaluacion){
 
@@ -31,21 +35,24 @@ public class EvaluacionService {
             return null;
         }
 
-        repository.save(evaluacion);
-        return evaluacion;
+        return repository.save(evaluacion);
+         
     }
 
     //Actualizar
     public Evaluacion actualizarEvaluacion(Evaluacion evaluacion){
+
         if (!repository.existsById(evaluacion.getEvaluacionId())) {
             return null;
         }
+
         repository.save(evaluacion);
         return evaluacion;
     }
 
     //Eliminar
     public void deleteEvaluacion(Long evaluacionId){
+        
         if (!repository.existsById(evaluacionId)) {
             throw new NoSuchElementException("No existe una evaluacion con id: " + evaluacionId);
         }

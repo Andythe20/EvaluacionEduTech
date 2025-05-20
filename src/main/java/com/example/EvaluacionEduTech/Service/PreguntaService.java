@@ -1,23 +1,18 @@
 package com.example.EvaluacionEduTech.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.EvaluacionEduTech.Model.Evaluacion;
 import com.example.EvaluacionEduTech.Model.Pregunta;
-import com.example.EvaluacionEduTech.Repository.EvaluacionRepository;
 import com.example.EvaluacionEduTech.Repository.PreguntaRepository;
 
 @Service
 public class PreguntaService {
+
     @Autowired
     private PreguntaRepository preguntaRepository;
-
-    @Autowired 
-    private EvaluacionRepository evaluacionRepository;
 
     // listar todo
     public List<Pregunta> listarPreguntas() {
@@ -26,52 +21,59 @@ public class PreguntaService {
 
     // Buscar pregunta por id
     public Pregunta buscarPreguntaId(Long idPregunta) {
+
         if (preguntaRepository.existsById(idPregunta)) {
             return preguntaRepository.findById(idPregunta).get();
-        } else {
-            return null;
         }
+        
+        return null;
+        
     }
 
+    //buscar pregunta por su texto
     public Pregunta buscarPreguntaPorTexto(String textoPregunta) {
+
         if (preguntaRepository.existsByTextoPregunta(textoPregunta)) {
             return preguntaRepository.findByTextoPregunta(textoPregunta);
-        } else {
-            return null;
         }
+        
+        return null;
+        
+    }
+
+    //verificar si existe
+    public boolean existsById(Long idPregunta){
+        return preguntaRepository.existsById(idPregunta);
     }
 
     // guardar
     public Pregunta guardarPregunta(Pregunta pregunta) {
 
+        //verificamos si se repite
         if (preguntaRepository.existsByTextoPregunta(pregunta.getTextoPregunta())) {
             return null;
         }
 
-        preguntaRepository.save(pregunta);
+        return preguntaRepository.save(pregunta);
 
-        Evaluacion evaluacionCargada = evaluacionRepository.findById(pregunta.getEvaluacion().getEvaluacionId()).get();
-        Pregunta preguntaCargada = preguntaRepository.findByTextoPregunta(pregunta.getTextoPregunta());
-        preguntaCargada.setEvaluacion(evaluacionCargada);
-
-        return preguntaCargada;
     }
 
     // Actualizar Pregunta
     public Pregunta actualizarPregunta(Pregunta pregunta) {
+
+        //verificamos si existe
         if (!preguntaRepository.existsById(pregunta.getPreguntaId())) {
             return null;
         }
+        
 
         return preguntaRepository.save(pregunta);
     }
 
     // Eliminar Pregunta
-    public void eliminarPregunta(Long idPregunta) {
-        if (preguntaRepository.existsById(idPregunta)) {
-            preguntaRepository.deleteById(idPregunta);
-        } else {
-            throw new NoSuchElementException("No se encuentra la pregunta con id: " + idPregunta);
-        }
+    public Pregunta eliminarPregunta(Long idPregunta) {
+        
+        preguntaRepository.deleteById(idPregunta);
+        return null;
     }
 }
