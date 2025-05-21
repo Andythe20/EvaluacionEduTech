@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.EvaluacionEduTech.Model.Evaluacion;
 import com.example.EvaluacionEduTech.Service.EvaluacionService;
-import org.springframework.web.bind.annotation.PutMapping;
 
 
 
@@ -44,12 +44,13 @@ public class EvaluacionController {
     @GetMapping("/{evaluacionId}")
     public ResponseEntity<Evaluacion> BuscarPorId(@PathVariable Long evaluacionId) {
 
-        if (service.getEvaluacionId(evaluacionId) == null) {
-            ResponseEntity.noContent().build();
+        if (!service.existsById(evaluacionId)) {
+            return ResponseEntity.notFound().build();
         }
 
         //encontrar evaluacion
-        Evaluacion ev = service.getEvaluacionId(evaluacionId);
+        Evaluacion ev = service.findById(evaluacionId);
+
 
         return ResponseEntity.ok(ev);
     }
@@ -63,11 +64,11 @@ public class EvaluacionController {
         }
 
         service.guardarEvaluacion(evaluacion);
-        return ResponseEntity.ok(service.getEvaluacionId(evaluacion.getEvaluacionId()));
+        return ResponseEntity.ok(service.findById(evaluacion.getEvaluacionId()));
     }
 
     //Actualizar Evaluacion
-    @PutMapping("/")
+    @PatchMapping("/")
     public ResponseEntity<Evaluacion> ActualizaEvaluacion(@RequestBody Evaluacion evaluacion) {        
         
         //verificar si esta nulo
@@ -81,24 +82,19 @@ public class EvaluacionController {
         }
         
         service.actualizarEvaluacion(evaluacion);
-        return ResponseEntity.ok(service.getEvaluacionId(evaluacion.getEvaluacionId()));
+
+        return ResponseEntity.ok(service.findById(evaluacion.getEvaluacionId()));
     }
     
     //Eliminar Evaluacion
     @DeleteMapping("/{evaluacionId}")
     public ResponseEntity<Evaluacion> EliminarEvaluacion(@PathVariable Long evaluacionId){
 
-        //verificar si esta nulo
-        if (evaluacionId == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        /*
         //verificar si existe
         if (!service.existsById(evaluacionId)) {
             return ResponseEntity.notFound().build();
         }
-        */
+        
 
         service.deleteEvaluacion(evaluacionId);
         return ResponseEntity.ok().build();

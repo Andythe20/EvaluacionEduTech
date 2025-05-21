@@ -36,7 +36,7 @@ public class Evaluacion {
     private String descripcion;
 
     @Column(nullable = false, name = "curso_id")
-    private int cursoId; // Relación con Curso
+    private Integer cursoId; // Relación con Curso
 
     @Column(nullable = false, name = "fecha_creacion")
     private LocalDate fechaCreacion;
@@ -45,13 +45,13 @@ public class Evaluacion {
     private TipoEvaluacion tipoEvaluacion; // Enum
 
     @Column(nullable = false, name = "puntaje_maximo")
-    private int puntajeMaximo;
+    private Integer puntajeMaximo;
 
     @OneToMany(mappedBy = "evaluacion", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Pregunta> preguntas;
 
     @Column(nullable = false, name = "duracion_minutos")
-    private int duracionMinutos;
+    private Integer duracionMinutos;
 
 }

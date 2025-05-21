@@ -1,7 +1,6 @@
 package com.example.EvaluacionEduTech.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ public class EvaluacionService {
     }
 
     //Obtener por id
-    public Evaluacion getEvaluacionId(Long evaluacionID){
+    public Evaluacion findById(Long evaluacionID){
         return repository.findById(evaluacionID).get();
     }
 
@@ -28,11 +27,28 @@ public class EvaluacionService {
         return repository.existsById(evaluacionId);
     }
 
+    //validar la evaluacion
+    public boolean validarEvaluacion(Evaluacion ev){
+        if (ev.getTitulo() == null || ev.getTitulo().isEmpty() ||
+            ev.getDescripcion() == null|| ev.getDescripcion().isEmpty() ||
+            ev.getCursoId() == null || ev.getFechaCreacion() == null ||
+            ev.getTipoEvaluacion() == null || 
+            ev.getPuntajeMaximo() <= 0 || ev.getPuntajeMaximo() == null || 
+            ev.getDuracionMinutos() == null || ev.getDuracionMinutos() <= 0) {
+            return true;
+        }
+        return false;
+    }
+
     //Guardar
     public Evaluacion guardarEvaluacion(Evaluacion evaluacion){
 
         if (repository.existsByTitulo(evaluacion.getTitulo())) {
-            return null;
+            throw new RuntimeException("El titulo de la evaluacion ya existe");
+        }
+
+        if (validarEvaluacion(evaluacion)) {
+            throw new RuntimeException("La evaluacion no es valida");
         }
 
         return repository.save(evaluacion);
@@ -42,21 +58,35 @@ public class EvaluacionService {
     //Actualizar
     public Evaluacion actualizarEvaluacion(Evaluacion evaluacion){
 
-        if (!repository.existsById(evaluacion.getEvaluacionId())) {
-            return null;
+        if (validarEvaluacion(evaluacion)) {
+            throw new RuntimeException("La evaluacion no es valida");
         }
 
-        repository.save(evaluacion);
-        return evaluacion;
+        Evaluacion evaluacionExistente = repository.findById(evaluacion.getEvaluacionId()).get();
+
+        //validar que el titulo de la evaluacion existente sea igual a la evaluacion que se va a actualizar
+        if (!evaluacionExistente.getTitulo().equals(evaluacion.getTitulo())) {
+            throw new RuntimeException("El titulo no pertenece a la id");
+        }
+
+        //actualizar
+        evaluacionExistente.setTitulo(evaluacion.getTitulo());
+        evaluacionExistente.setDescripcion(evaluacion.getDescripcion());
+        evaluacionExistente.setCursoId(evaluacion.getCursoId());
+        evaluacionExistente.setFechaCreacion(evaluacion.getFechaCreacion());
+        evaluacionExistente.setTipoEvaluacion(evaluacion.getTipoEvaluacion());
+        evaluacionExistente.setPuntajeMaximo(evaluacion.getPuntajeMaximo());
+        evaluacionExistente.setDuracionMinutos(evaluacion.getDuracionMinutos());
+        
+        return repository.save(evaluacionExistente);
+
     }
 
     //Eliminar
-    public void deleteEvaluacion(Long evaluacionId){
+    public Evaluacion deleteEvaluacion(Long evaluacionId){
         
-        if (!repository.existsById(evaluacionId)) {
-            throw new NoSuchElementException("No existe una evaluacion con id: " + evaluacionId);
-        }
         repository.deleteById(evaluacionId);
+        return null;
     }
 
 }
