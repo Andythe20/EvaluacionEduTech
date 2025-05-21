@@ -45,6 +45,6 @@ public class Pregunta {
     private String respuestaCorrecta;
 
     @ManyToOne
-    @JoinColumn(name = "evaluacion_id")
+    @JoinColumn(nullable = false, name = "evaluacion_id")
     private Evaluacion evaluacion;
 }
