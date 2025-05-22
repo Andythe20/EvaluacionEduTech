@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.EvaluacionEduTech.Model.Evaluacion;
 import com.example.EvaluacionEduTech.Model.Pregunta;
 import com.example.EvaluacionEduTech.Repository.PreguntaRepository;
 
@@ -21,13 +22,7 @@ public class PreguntaService {
 
     // Buscar pregunta por id
     public Pregunta buscarPreguntaId(Long idPregunta) {
-
-        if (preguntaRepository.existsById(idPregunta)) {
-            return preguntaRepository.findById(idPregunta).get();
-        }
-        
-        return null;
-        
+        return preguntaRepository.findById(idPregunta).get(); 
     }
 
     //buscar pregunta por su texto
@@ -39,6 +34,17 @@ public class PreguntaService {
         
         return null;
         
+    }
+
+    public boolean validarPregunta(Pregunta pregunta){
+        if (pregunta.getTextoPregunta() == null || pregunta.getTextoPregunta().isEmpty() ||
+            pregunta.getPuntaje() == null || pregunta.getPuntaje() <= 0 ||
+            pregunta.getRespuestaCorrecta() == null || pregunta.getRespuestaCorrecta().isEmpty()){
+            return true;
+            
+        }
+
+        return false;
     }
 
     //verificar si existe
@@ -54,6 +60,11 @@ public class PreguntaService {
             return null;
         }
 
+        //verificamos si es valida
+        if (validarPregunta(pregunta)) {
+            return null;
+        }
+
         return preguntaRepository.save(pregunta);
 
     }
@@ -61,10 +72,25 @@ public class PreguntaService {
     // Actualizar Pregunta
     public Pregunta actualizarPregunta(Pregunta pregunta) {
 
-        //verificamos si existe
-        if (!preguntaRepository.existsById(pregunta.getPreguntaId())) {
+        //verificamos si es valida
+        if (validarPregunta(pregunta)) {
             return null;
         }
+
+        Pregunta preguntaEncontrada = preguntaRepository.findById(pregunta.getPreguntaId()).get();
+
+        //validar que el texto de la pregunta existente sea igual a la pregunta que se va a actualizar
+        if (!preguntaEncontrada.getTextoPregunta().equals(pregunta.getTextoPregunta())) {
+            return null;
+        }
+
+        Evaluacion evaluacion = pregunta.getEvaluacion();
+
+        //actualizar
+        preguntaEncontrada.setTextoPregunta(pregunta.getTextoPregunta());
+        preguntaEncontrada.setPuntaje(pregunta.getPuntaje());
+        preguntaEncontrada.setRespuestaCorrecta(pregunta.getRespuestaCorrecta());
+        preguntaEncontrada.setEvaluacion(evaluacion);
         
 
         return preguntaRepository.save(pregunta);
