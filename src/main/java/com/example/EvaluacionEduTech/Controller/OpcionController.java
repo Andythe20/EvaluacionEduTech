@@ -3,7 +3,6 @@ package com.example.EvaluacionEduTech.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,12 +39,12 @@ public class OpcionController {
 
     @GetMapping("/{idOpcion}")
     public ResponseEntity<Opcion> obtenerOpcionId(@PathVariable Long idOpcion){
-        try {
-            Opcion opcion = opcionService.obtenerOpcionId(idOpcion);
-            return new ResponseEntity<>(opcion, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        
+        if (!opcionService.existsById(idOpcion)) {
+            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok(opcionService.findById(idOpcion));
     }
 
     @PostMapping("/")
@@ -56,27 +55,37 @@ public class OpcionController {
         }
 
         opcionService.guardarOpcion(opcion);
-        return ResponseEntity.ok(opcionService.obtenerOpcionId(opcion.getOpcionId()));
+        return ResponseEntity.ok(opcionService.findById(opcion.getOpcionId()));
     }    
 
-    @PutMapping()
+    @PutMapping("/")
     public Opcion actualizarOpcion(@RequestBody Opcion nuevaOpcion){
-        try {
-            return opcionService.actualizarOpcion(nuevaOpcion);
-        } catch (Exception e) {
+        
+        if (nuevaOpcion == null) {
             return null;
         }
+
+        if (!opcionService.existsById(nuevaOpcion.getOpcionId())) {
+            return null;
+        }
+
+        return opcionService.actualizarOpcion(nuevaOpcion);
+            
+        
     }
 
 
     @DeleteMapping("/{idOpcion}")
     public ResponseEntity<Opcion> eliminarOpcionId(@PathVariable Long idOpcion){
-        try {
-            opcionService.eliminarOpcionId(idOpcion);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        
+        if (!opcionService.existsById(idOpcion)) {
+            return ResponseEntity.notFound().build();
         }
+
+        opcionService.eliminarOpcionId(idOpcion);
+        return ResponseEntity.ok().build();
+            
+        
     }
 
 }

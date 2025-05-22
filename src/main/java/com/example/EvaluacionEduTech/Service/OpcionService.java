@@ -1,7 +1,6 @@
 package com.example.EvaluacionEduTech.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,31 +19,31 @@ public class OpcionService {
         return opcionRepository.findAll();
     }
 
+    public boolean existsByTextoOpcion(String opcion){
+        return opcionRepository.existsByTextoOpcion(opcion);
+    }
+
+    public boolean existsById(Long idOpcion){
+        return opcionRepository.existsById(idOpcion);
+    }
+
+    public Opcion findByTextoOpcion(String opcion){
+        return opcionRepository.findByTextoOpcion(opcion);
+    }
+
+    //Obtener opcion por id
+    public Opcion findById(Long opcionId){
+        return opcionRepository.findById(opcionId).get();
+    }
+
     //validar opcion
     public boolean validarOpcion(Opcion opcion){
 
-        if (opcion.getOpcion().isEmpty() || opcion.getOpcion() == null
+        if (opcion.getTextoOpcion().isEmpty() || opcion.getTextoOpcion() == null
             || opcion.getPregunta() == null) {
             return false;
         }
         return true;
-    }
-
-    public boolean existsByOpcion(String opcion){
-        return opcionRepository.existsByOpcion(opcion);
-    }
-
-    public Opcion findByOpcion(String opcion){
-        return opcionRepository.findByOpcion(opcion);
-    }
-
-    //Obtener opcion por id
-    public Opcion obtenerOpcionId(Long opcionId){
-        try {
-            return opcionRepository.findById(opcionId).get();
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     //guardar opcion
@@ -54,7 +53,7 @@ public class OpcionService {
             return null;
         }
 
-        if (existsByOpcion(opcion.getOpcion())) {
+        if (existsByTextoOpcion(opcion.getTextoOpcion())) {
             return null;
         }
 
@@ -64,20 +63,27 @@ public class OpcionService {
 
     //Actualizar Opcion
     public Opcion actualizarOpcion(Opcion nuevaOpcion){
-        if (opcionRepository.existsById(nuevaOpcion.getOpcionId())) {
-            return opcionRepository.save(nuevaOpcion);
-        } else {
-            return null;
+        
+        if (!validarOpcion(nuevaOpcion)) {
+            throw new RuntimeException("El texto de la opción no es valida");
         }
+
+        Opcion opcionEncontrada = opcionRepository.findById(nuevaOpcion.getOpcionId()).get();
+
+        if (!opcionEncontrada.getTextoOpcion().equals(nuevaOpcion.getTextoOpcion())) {
+            throw new RuntimeException("El texto de la opción no corresponde a su id");
+        }
+
+        opcionEncontrada.setPregunta(nuevaOpcion.getPregunta());
+
+        return opcionRepository.save(opcionEncontrada);
     }
 
     //Eliminar opcion
-    public void eliminarOpcionId(Long idOpcion){
-        if (opcionRepository.existsById(idOpcion)) {
-            opcionRepository.deleteById(idOpcion);
-        } else {
-            throw new NoSuchElementException("No existe la opcion con id: " + idOpcion);
-        }
+    public Opcion eliminarOpcionId(Long idOpcion){
+        
+        opcionRepository.deleteById(idOpcion);
+        return null;
     }
 
 
