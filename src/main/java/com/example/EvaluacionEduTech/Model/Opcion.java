@@ -25,7 +25,7 @@ public class Opcion {
     private Long opcionId;
 
     @Column(nullable = false)
-    private String opcion;
+    private String textoOpcion;
 
     @ManyToOne
     @JoinColumn(name = "pregunta_id", nullable = false)
