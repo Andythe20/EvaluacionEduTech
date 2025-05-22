@@ -3,10 +3,10 @@ package com.example.EvaluacionEduTech.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.EvaluacionEduTech.Model.Pregunta;
 import com.example.EvaluacionEduTech.Service.PreguntaService;
-import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
@@ -40,12 +39,12 @@ public class PreguntaController {
 
     @GetMapping("/{idPregunta}")
     public ResponseEntity<Pregunta> buscarPreguntaId(@PathVariable Long idPregunta){
-        try {
-            Pregunta pregunta = preguntaService.buscarPreguntaId(idPregunta);
-            return new ResponseEntity<>(pregunta, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        
+        if (!preguntaService.existsById(idPregunta)) {
+            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok(preguntaService.buscarPreguntaId(idPregunta));
     }
 
     @PostMapping("/")
@@ -54,13 +53,11 @@ public class PreguntaController {
         if (pregunta == null) {
             return ResponseEntity.badRequest().build();
         }
-
-        preguntaService.guardarPregunta(pregunta);
-        Pregunta preg = preguntaService.buscarPreguntaId(pregunta.getPreguntaId());
-        return ResponseEntity.ok(preg);
+;
+        return ResponseEntity.ok(preguntaService.guardarPregunta(pregunta));
     }
     
-    @PutMapping("/")
+    @PatchMapping("/")
     public ResponseEntity<Pregunta> actualizarPregunta(@RequestBody Pregunta pregunta){
 
         //verificar que no venga nulo
@@ -81,14 +78,11 @@ public class PreguntaController {
 
     @DeleteMapping("/{idPregunta}")
     public ResponseEntity<Pregunta> eliminarPreguntaId(@PathVariable Long idPregunta){
-        try {
-
-            preguntaService.eliminarPregunta(idPregunta);
-            return ResponseEntity.ok().build();
-
-        } catch (Exception e) {
-
+        
+        if (!preguntaService.existsById(idPregunta)) {
             return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok(preguntaService.eliminarPregunta(idPregunta));
     }
 }

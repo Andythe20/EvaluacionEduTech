@@ -35,7 +35,7 @@ public class Pregunta {
     private String textoPregunta;
 
     @Column(nullable = false, name = "puntaje")
-    private int puntaje;
+    private Integer puntaje;
 
     @OneToMany(mappedBy = "pregunta", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
