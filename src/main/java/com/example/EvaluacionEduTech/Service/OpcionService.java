@@ -70,12 +70,7 @@ public class OpcionService {
 
         Opcion opcionEncontrada = opcionRepository.findById(nuevaOpcion.getOpcionId()).get();
 
-        if (!opcionEncontrada.getTextoOpcion().equals(nuevaOpcion.getTextoOpcion())) {
-            throw new RuntimeException("El texto de la opción no corresponde a su id");
-        }
-
         opcionEncontrada.setPregunta(nuevaOpcion.getPregunta());
-
         return opcionRepository.save(opcionEncontrada);
     }
 

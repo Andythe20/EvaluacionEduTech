@@ -78,11 +78,6 @@ public class PreguntaService {
 
         Pregunta preguntaEncontrada = preguntaRepository.findById(pregunta.getPreguntaId()).get();
 
-        //validar que el texto de la pregunta existente sea igual a la pregunta que se va a actualizar
-        if (!preguntaEncontrada.getTextoPregunta().equals(pregunta.getTextoPregunta())) {
-            throw new RuntimeException("El texto de la pregunta no pertenece a la id");
-        }
-
         //actualizar
         preguntaEncontrada.setTextoPregunta(pregunta.getTextoPregunta());
         preguntaEncontrada.setPuntaje(pregunta.getPuntaje());

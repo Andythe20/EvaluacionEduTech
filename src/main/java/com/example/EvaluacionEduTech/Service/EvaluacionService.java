@@ -64,11 +64,6 @@ public class EvaluacionService {
 
         Evaluacion evaluacionExistente = repository.findById(evaluacion.getEvaluacionId()).get();
 
-        //validar que el titulo de la evaluacion existente sea igual a la evaluacion que se va a actualizar
-        if (!evaluacionExistente.getTitulo().equals(evaluacion.getTitulo())) {
-            throw new RuntimeException("El titulo no pertenece a la id");
-        }
-
         //actualizar
         evaluacionExistente.setTitulo(evaluacion.getTitulo());
         evaluacionExistente.setDescripcion(evaluacion.getDescripcion());
